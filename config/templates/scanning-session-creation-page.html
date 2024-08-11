@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_content %}
+
+    <div class="sufee-login d-flex align-content-center flex-wrap">
+        <div class="container">
+            <div class="login-content">
+                <div class="login-form">
+                    <form method="post">
+                        <div class="form-group">
+                            <label>{{form.scanning_session_name.label}}</label>
+                            {{form.scanning_session_name}}
+                        </div>
+                        <div class="form-group">
+                            <label>{{form.base_ip_address.label}}</label>
+                            {{form.base_ip_address}}
+                        </div>
+                        <div class="form-group">
+                            <label>{{form.ip_range.label}}</label>
+                            {{form.ip_range}}
+                        </div>
+                        <div class="form-group">
+                            <label>{{form.random_or_not.label}}</label><br>
+                            {{form.random_or_not}}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">Create  Scanning Session</button>
+                        {% csrf_token %}
+                    </form>
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
