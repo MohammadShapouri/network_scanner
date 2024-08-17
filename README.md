@@ -1,6 +1,3 @@
-# network_scanner
-
-
 # Network Scanner
 
 A network scanning tool for scanning IP addresses and ports in Linux systems.
@@ -11,24 +8,24 @@ A network scanning tool for scanning IP addresses and ports in Linux systems.
 
 * Add your env variables in .env file.
 
-* Run the following commands one by one in a folder where you can see manage.py there
+* Run the following commands one by one in a folder where you can see manage.py there:
     ```
     $ python3 manage.py makemigrations
     ```
     ```
     $ python3 manage.py migrate
     ```
-* Then run the following command in that directory and answer the questions to create a superuser.
+* Then run the following command in that directory and answer the questions to create a superuser:
     ```
     $ python3 manage.py createsuperuser
     ```
 
-* Finally run the following command there to start the project.
+* Finally run the following command there to start the project:
     ```
     $ python3 manage.py runserver
     ```
 
-Now, open '_127.0.0.1:8000_' to see the main page of project.
+Now, open '_127.0.0.1:8000_' to see the project's main page.
 
-You can see admin panel by openning '_127.0.0.1:8000/admin_'.
+You can see the admin panel by opening '_127.0.0.1:8000/admin_'.
 
