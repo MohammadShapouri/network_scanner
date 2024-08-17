@@ -1,5 +1,4 @@
 import re
-import random
 import platform    # For getting the operating system name
 import subprocess  # For executing a shell command
 import concurrent.futures
