@@ -1,9 +1,10 @@
 # Network Scanner
 
-A network scanning tool for scanning IP addresses and ports in Linux systems.
+A network scanning tool for scanning IP addresses and ports in Linux and Windows systems.
 
 
 ## Installation
+_Note: If you use Windows, instead of 'python3' use 'python'._
 * Navigate to the project folder.
 
 * Run 'pip install -r requirements.txt to install required packages.
