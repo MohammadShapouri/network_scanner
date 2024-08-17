@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_content %}
+    <div class="sufee-login d-flex align-content-center flex-wrap">
+        <div class="container">
+            <div class="login-content">
+                <div class="login-form">
+                    <form method="post">
+                        <div class="checkbox">
+                            <label>
+                                {{form.confirm_deletion.label}}
+                            </label>
+                            {{form.confirm_deletion}}
+                        </div> <br>
+                        <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">Remove Down Servers</button>
+                        {% csrf_token %}
+                    </form>
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

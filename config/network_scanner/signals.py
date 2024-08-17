@@ -16,3 +16,5 @@ def create_network_scanning_session_ip_address(sender, instance, created, **kwar
                     NetworkScanningSessionIPAddress.objects.bulk_create(network_scanning_session_ip_address_obj_list)
                     network_scanning_session_ip_address_obj_list = list()
 
+            if len(network_scanning_session_ip_address_obj_list) < 1500:
+                    NetworkScanningSessionIPAddress.objects.bulk_create(network_scanning_session_ip_address_obj_list)

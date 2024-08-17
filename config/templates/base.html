@@ -30,14 +30,25 @@
     <div id="right-panel" class="right-panel">
         <header id="header" class="header">
             <div class="header-menu">
-                <div class="col-sm-7">
-
-                </div>
-                <div class="col-sm-5">
-                    <div class="user-area dropdown float-right">
-                        <div class="dropdown-toggle">
-                            <p>Network Scanner</p>
+                <div class="col-sm-8">
+                    <div class="float-left">
+                        <div style="margin-top: 1.5vh;">
+                            <p style="font-size: xx-large;">Network Scanner</p>
                         </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="float-right">
+                        <button style="height: 7vh;">
+                            <a href="{% url 'list-session' %}">Scanning Sessions List</a>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="float-right">
+                        <button style="height: 7vh;">
+                            <a href="{% url 'create-session' %}">Create New Scanning Session</a>
+                        </button>
                     </div>
                 </div>
             </div>

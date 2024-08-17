@@ -61,7 +61,7 @@ class ServerPingScanner:
 
 
 
-    def unavailible_server_writer(self, ip_addr_obj):
+    def Unavailable_server_writer(self, ip_addr_obj):
         try:
             ip_addr_obj.is_up = 'down'
             ip_addr_obj.save()
@@ -94,6 +94,6 @@ class ServerPingScanner:
                     self.availible_server_writer(ip_obj_list[i])
                     print(ip_obj_list[i] + " is availible.")
                 else:
-                    self.unavailible_server_writer(ip_obj_list[i])
+                    self.Unavailable_server_writer(ip_obj_list[i])
             else:
                 self.incorrect_ip_writer(ip_obj_list[i])

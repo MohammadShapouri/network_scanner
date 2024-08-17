@@ -63,7 +63,7 @@ class PortScanner:
 
 
 
-    def unavailible_port_writer(self, port_status_obj):
+    def Unavailable_port_writer(self, port_status_obj):
         try:
             port_status_obj.is_open = 'close'
             port_status_obj.save()
@@ -92,7 +92,7 @@ class PortScanner:
                     self.availible_port_writer(port_status_obj_list[i])
                     print(port_status_obj_list[i].related_ip_address.ip_address + " is availible.")
                 else:
-                    self.unavailible_port_writer(port_status_obj_list[i])
+                    self.Unavailable_port_writer(port_status_obj_list[i])
                 tcp.close()
             else:
                 self.incorrect_ip_writer(port_status_obj_list[i].related_ip_address)

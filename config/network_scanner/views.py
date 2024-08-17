@@ -1,9 +1,10 @@
 from django.db.models.query import QuerySet
-from django.views.generic import DeleteView, CreateView, ListView, UpdateView, DetailView
+from django.http import HttpResponse
+from django.views.generic import DeleteView, CreateView, ListView, UpdateView, FormView
 from django.views import View
 from django.urls import reverse_lazy
-from .forms import NetworkScanningSessionForm, NetworkScanningSessionUpdateForm, NetworkScanningForm, NetworkScanningSessionDeletionForm, DeviceAndOSDetailForm
-from .models import NetworkScanningSession, NetworkScanningSessionIPAddress, PortStatus, IS_OPEN, IS_SCANNED
+from .forms import NetworkScanningSessionForm, NetworkScanningSessionUpdateForm, NetworkScanningForm, NetworkScanningSessionDeletionForm, DeviceAndOSDetailForm, NetworkScanningSessionDownServersDeletionForm
+from .models import NetworkScanningSession, NetworkScanningSessionIPAddress, PortStatus, DeviceAndOSDetail, IS_OPEN, IS_SCANNED
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .utils.scanners.server_ping_scanner import ServerPingScanner
@@ -13,6 +14,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
 from pathlib import Path
 from datetime import datetime
+from django.db import connection
 import os
 # Create your views here.
 
@@ -39,7 +41,7 @@ class NetworkScanningSessionUpdateView(UpdateView):
     form_class = NetworkScanningSessionUpdateForm
 
     def get_success_url(self):
-        return reverse_lazy('session-detail', kwargs={'pk': self.get_object().pk})
+        return reverse_lazy('session-detail', kwargs={'pk': self.kwargs.get('pk')})
 
 
 
@@ -47,7 +49,7 @@ class NetworkScanningSessionUpdateView(UpdateView):
 
 class NetworkScanningSessionDeletionView(DeleteView):
     model = NetworkScanningSession
-    template_name = 'album-delete-page.html'
+    template_name = 'session-delete-page.html'
     form_class = NetworkScanningSessionDeletionForm
 
     def get_success_url(self):
@@ -339,10 +341,18 @@ class NetworkScanningSessionDetailView(View):
             else:
                 ip_addresses_queryset = NetworkScanningSessionIPAddress.objects.filter(related_scan_session=network_scanning_session_obj)
 
+
+            if form.cleaned_data.get('what_to_scan') == 'not_scanned':
+                ip_addresses_queryset = ip_addresses_queryset.filter(is_up='ns')
+            elif form.cleaned_data.get('what_to_scan') == 'availible':
+                ip_addresses_queryset = ip_addresses_queryset.filter(is_up='up')
+            elif form.cleaned_data.get('what_to_scan') == 'not_availible':
+                ip_addresses_queryset = ip_addresses_queryset.filter(is_up='down')
+            
+
             if form.cleaned_data.get('scan_type') == 'ss':
                 sps = ServerPingScanner(4, form.cleaned_data.get('thread_count'), ip_addresses_queryset)
                 sps.start_scanning()
-
             elif form.cleaned_data.get('scan_type') == 'ps':
                 open_ports_pre_bulit_obj_list = list()
                 port_number = form.cleaned_data.get('port_number')
@@ -900,3 +910,40 @@ class NetworkScanningSessionDeviceDetailView(View):
         }
         return render(request, self.template_name, data)
 
+
+
+
+
+class NetworkScanningSessionRemoveDownServer(FormView):
+    form_class = NetworkScanningSessionDownServersDeletionForm
+    template_name = 'down-server-delete-page.html'
+
+    def get_success_url(self):
+        return reverse_lazy('session-detail', kwargs={'pk': self.kwargs.get('pk')})
+
+
+
+    def form_valid(self, form):
+        scanning_session_pk = get_object_or_404(NetworkScanningSession, pk=self.kwargs.get('pk')).pk
+        
+        with connection.cursor() as cursor:
+            cursor.execute(
+                            f"""
+                            DELETE from network_scanner_portstatus where related_ip_address_id in
+                            (SELECT id from network_scanner_networkscanningsessionipaddress where related_scan_session_id == {scanning_session_pk} and is_up == 'down')            
+                            """
+                        )
+
+            cursor.execute(
+                            f"""
+                            DELETE from network_scanner_deviceandosdetail where related_ip_address_id in
+                            (SELECT id from network_scanner_networkscanningsessionipaddress where related_scan_session_id == {scanning_session_pk} and is_up == 'down')            
+                            """
+                        )
+        
+            cursor.execute(
+                            f"""
+                            DELETE from network_scanner_networkscanningsessionipaddress where related_scan_session_id == {scanning_session_pk} and is_up == 'down'
+                            """
+                        )
+        return super().form_valid(form)

@@ -16,7 +16,7 @@
                                             <h5 class="text-sm-center mt-2 mb-1">{{object.scanning_session_name}}</h5>
                                             <hr>
                                             <div class="card-text text-sm-center">
-                                                <a href="{% url 'session-device-detail' object.pk %}"><i class="fa fa-desktop"></i>Add Devices Data</a>
+                                                <a href="{% url 'delete-session-down-server' object.pk %}"><i class="fa fa-desktop"></i>Remove Down/Unavailable IPs</a>
                                                 <a href="{% url 'update-session' object.pk %}"><i class="fa fa-edit pr-1"></i>Edit</a>
                                                 <a href="{% url 'delete-session' object.pk %}"><i class="fa fa-trash-o pr-1"></i>Delete</a>
                                             </div>
@@ -44,9 +44,9 @@
                                     <strong>Page Info</strong>
                                 </div>
                                 <div class="card-body">
-                                    <h4>You are currently in server and ports status page. To upload and check devices and OS types detail, click the button.</span></h4>
+                                    <h4>You are currently on server and ports status page. To upload and check devices and OS type details, click the button.</span></h4>
                                     <hr>
-                                    <button style="margin-left: 29%;"><a href="{% url 'session-device-detail' object.pk %}?filter_input=no-ip">Devices and OS Types Detail</a></button>
+                                    <button style="margin-left: 29%;"><a href="{% url 'session-device-detail' object.pk %}?filter_input=no-ip">Devices and OS Type Details</a></button>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                                                 <option value="all">All IP Addresses</option>
                                                 <option value="scanned">Scanned IP Addresses</option>
                                                 <option value="up">Up/Availible IP Addresses</option>
-                                                <option value="down">Down/Unavailible IP Addresses</option>
+                                                <option value="down">Down/Unavailable IP Addresses</option>
                                                 <option value="not-scanned">Not Scanned IP Addresses</option>
                                             </select>
 
@@ -106,14 +106,18 @@
                                     {{network_scanning_form.scan_type}}
                                 </div>
                                 <div class="form-group">
-                                    <label>{{network_scanning_form.port_number.label}}: (If you choosed 'Port Status', use this field.) </label>
+                                    <label>{{network_scanning_form.what_to_scan.label}}: (If you chose 'Port Status', use this field.)</label>
+                                    {{network_scanning_form.what_to_scan}}
+                                </div>
+                                <div class="form-group">
+                                    <label>{{network_scanning_form.port_number.label}}: (If you chose 'Server Status', use this field.) </label>
                                     {{network_scanning_form.port_number}}
                                 </div>
                                 <div class="form-group">
                                     <label>{{network_scanning_form.thread_count.label}}: </label>
                                     {{network_scanning_form.thread_count}}
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30" onclick="alert('Feel free to close browser or this tab but please don\'t close terminal or turn off your PC until scanning is finished. To stop this scan, user \'Ctrl + c\' in your terminal.')">Scan</button>
+                                <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30" onclick="alert('Feel free to close the browser or this tab but please don\'t close the terminal or turn off your PC until scanning is finished. To stop this scan, use \'Ctrl + c\' in your terminal.')">Scan</button>
                                 {% csrf_token %}
                             </form>
                             {% if network_scanning_form.errors %}

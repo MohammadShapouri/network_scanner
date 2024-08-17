@@ -51,6 +51,10 @@ class NetworkScanningSessionDeletionForm(forms.Form):
 
 
 
+class NetworkScanningSessionDownServersDeletionForm(NetworkScanningSessionDeletionForm):
+    pass
+
+
 
 class NetworkScanningForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -63,7 +67,16 @@ class NetworkScanningForm(forms.Form):
         ('ss', 'Server Status'),
         ('ps', 'Port Status')
     )
+
+    WHAT_TO_SCAN = (
+        ('all', 'All IPs'),
+        ('not_scanned', 'Not Scanned Ones'),
+        ('available', 'Available IPs'),
+        ('not_available', 'Down/Unavailable IPs')
+    )
+
     scan_type = forms.ChoiceField(choices=SCAN_TYPE, required=True, label='Scan Type')
+    what_to_scan = forms.ChoiceField(choices=WHAT_TO_SCAN, required=False, label="What to Scan?")
     port_number = forms.CharField(required=False, label='Port Number')
     thread_count = forms.CharField(required=False, label='Thread Count')
 
@@ -112,6 +125,7 @@ class DeviceAndOSDetailForm(forms.Form):
         ('usr', 'Uploading Scan Result'),
         ('rs', 'Running Scanner')
     )
+
 
     scan_type = forms.ChoiceField(choices=SCAN_TYPE, required=True, label='Choose an Option')
     device_and_os_detail_nmap_txt_result_file = forms.FileField(required=False, label="Device and OS Detail nmap .txt Result")

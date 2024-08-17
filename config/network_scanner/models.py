@@ -55,8 +55,8 @@ class NetworkScanningSessionIPAddress(models.Model):
 
 class PortStatus(models.Model):
     related_ip_address  = models.ForeignKey('NetworkScanningSessionIPAddress', on_delete=models.CASCADE, verbose_name="Related IP Address")
-    port = models.CharField(max_length=15, blank=False, null=False, verbose_name="Port Number", validators=[port_range_number_range_validator])
-    is_open = models.CharField(choices=IS_OPEN, max_length=5, blank=False, null=False, verbose_name="port status")
+    port                = models.CharField(max_length=15, blank=False, null=False, verbose_name="Port Number", validators=[port_range_number_range_validator])
+    is_open             = models.CharField(choices=IS_OPEN, max_length=5, blank=False, null=False, verbose_name="port status")
 
     def __str__(self):
         return str(self.related_ip_address) + " - " + str(self.port) + " - " + str(self.is_open)
