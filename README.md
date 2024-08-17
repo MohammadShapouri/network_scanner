@@ -6,6 +6,9 @@ A network scanning tool for scanning IP addresses and ports in Linux systems.
 ## Installation
 * Navigate to the project folder.
 
+* Run 'pip install -r requirements.txt to install required packages.
+  _Note: It's better to use virtualenv in order to avoid any conflicts in future._
+
 * Add your env variables in .env file.
 
 * Run the following commands one by one in a folder where you can see manage.py there:
