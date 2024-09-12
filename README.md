@@ -37,17 +37,17 @@ You can see the admin panel by opening '_127.0.0.1:8000/admin_'.
 
 ## Screenshots
 ### Sessions list:
-![sessions list](https://github.com/MohammadShapouri/network_scanner/blob/main/doc/list_sessions.png?raw=true)
+![sessions list](https://github.com/MohammadShapouri/network_scanner/blob/main/docs/list_sessions.png?raw=true)
 
 ### Creating session:
-![creating session](https://github.com/MohammadShapouri/network_scanner/blob/main/doc/create_session.png?raw=true)
+![creating session](https://github.com/MohammadShapouri/network_scanner/blob/main/docs/create_session.png?raw=true)
 
 ### Updating session:
-![updating session](https://github.com/MohammadShapouri/network_scanner/blob/main/doc/update_session.png?raw=true)
+![updating session](https://github.com/MohammadShapouri/network_scanner/blob/main/docs/update_session.png?raw=true)
 
 ### Deleting session:
-![deleting session](https://github.com/MohammadShapouri/network_scanner/blob/main/doc/delete_session.png?raw=true)
+![deleting session](https://github.com/MohammadShapouri/network_scanner/blob/main/docs/delete_session.png?raw=true)
 
 ### IP scan page:
-![ip scan page - up](https://github.com/MohammadShapouri/network_scanner/blob/main/doc/ip_scan_page_up.png?raw=true)
-![ip scan page - down](https://github.com/MohammadShapouri/network_scanner/blob/main/doc/ip_scan_page_down.png?raw=true)
+![ip scan page - up](https://github.com/MohammadShapouri/network_scanner/blob/main/docs/ip_scan_page_up.png?raw=true)
+![ip scan page - down](https://github.com/MohammadShapouri/network_scanner/blob/main/docs/ip_scan_page_down.png?raw=true)
