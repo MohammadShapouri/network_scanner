@@ -4,21 +4,21 @@ import concurrent.futures
 
 
 class PortScanner:
-    def __init__(self, port_number=4, thread_count=1, timeout=10, port_status_queryset=None):
+    def __init__(self, port_number=4, number_of_threads=1, timeout=10, port_status_queryset=None):
         self.port_number = int(port_number)
-        self.thread_count = int(thread_count)
+        self.number_of_threads = int(number_of_threads)
         self.timeout = timeout
         self.port_status_queryset = port_status_queryset
 
 
 
     def start_scanning(self):
-        splitted_port_status_obj_list_list = self.ip_list_splitter(self.port_status_queryset, self.thread_count) # A list which contains splitted lists of IP Addresses.
+        splitted_port_status_obj_list_list = self.ip_list_splitter(self.port_status_queryset, self.number_of_threads) # A list which contains splitted lists of IP Addresses.
         print("Port Number: " + str(self.port_number) + ".")
-        print("Thread Count: " + str(self.thread_count) + ".")
+        print("Thread Count: " + str(self.number_of_threads) + ".")
         print("Timeout: " + str(self.timeout) + ".")
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.thread_count)
-        for i in range(self.thread_count):
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.number_of_threads)
+        for i in range(self.number_of_threads):
             pool.submit(self.port_availibility_checker, splitted_port_status_obj_list_list[i], self.port_number, self.timeout)
         pool.shutdown(wait=True)
         print("Scanning Done!")
@@ -53,7 +53,6 @@ class PortScanner:
 
 
     def availible_port_writer(self, port_status_obj):
-        
         try:
             port_status_obj.is_open = 'open'
 

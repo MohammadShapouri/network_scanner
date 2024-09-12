@@ -43,5 +43,5 @@ def ip_range_number_range_validator(value):
 def port_range_number_range_validator(value):
     BaseNumberRangeValidator().validate(value, 0, 65535)
 
-def threat_count_number_range_validator(value):
-    BaseNumberRangeValidator().validate(value, 0, 1000)
+def number_of_threads_number_range_validator(value):
+    BaseNumberRangeValidator().validate(value, 0, 100)

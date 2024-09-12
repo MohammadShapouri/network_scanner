@@ -6,20 +6,20 @@ from network_scanner.models import NetworkScanningSessionIPAddress
 
 
 class ServerPingScanner:
-    def __init__(self, packet_count=4, thread_count=1, ip_addresses_queryset=None):
-        self.packet_count = int(packet_count)
-        self.thread_count = int(thread_count)
+    def __init__(self, number_of_packets=4, number_of_threads=1, ip_addresses_queryset=None):
+        self.number_of_packets = int(number_of_packets)
+        self.number_of_threads = int(number_of_threads)
         self.ip_addresses_queryset = ip_addresses_queryset
 
 
 
     def start_scanning(self):
-        splitted_ip_obj_list_list = self.ip_list_splitter(self.ip_addresses_queryset, self.thread_count) # A list which contains splitted lists of IP Addresses.
-        print("Packet Count: " + str(self.packet_count) + ".")
-        print("Thread Count: " + str(self.thread_count) + ".")
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.thread_count)
-        for i in range(self.thread_count):
-            pool.submit(self.server_availibility_checker, splitted_ip_obj_list_list[i], self.packet_count)
+        splitted_ip_obj_list_list = self.ip_list_splitter(self.ip_addresses_queryset, self.number_of_threads) # A list which contains splitted lists of IP Addresses.
+        print("Packet Count: " + str(self.number_of_packets) + ".")
+        print("Thread Count: " + str(self.number_of_threads) + ".")
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.number_of_threads)
+        for i in range(self.number_of_threads):
+            pool.submit(self.server_availibility_checker, splitted_ip_obj_list_list[i], self.number_of_packets)
         pool.shutdown(wait=True)
         print("Scanning Done!")
 
@@ -79,7 +79,7 @@ class ServerPingScanner:
 
 
 
-    def ping(self, ip_addr_obj, packet_count):
+    def ping(self, ip_addr_obj, number_of_packets):
         # Returning 0 means that the sever is up.
         """
         Returns True if host (str) responds to a ping request.
@@ -90,18 +90,18 @@ class ServerPingScanner:
         param = '-n' if platform.system().lower()=='windows' else '-c'
 
         # Building the command. Ex: "ping -c 1 google.com"
-        command = ['ping', param, str(packet_count), str(ip_addr_obj.ip_address)]
+        command = ['ping', param, str(number_of_packets), str(ip_addr_obj.ip_address)]
 
         return subprocess.call(command) == 0
 
 
 
-    def server_availibility_checker(self, ip_obj_list, packet_count):
+    def server_availibility_checker(self, ip_obj_list, number_of_packets):
         ip_list_length = len(ip_obj_list)
 
         for i in range(ip_list_length):
             if self.ip_addr_structure_verifier(ip_obj_list[i]) == True:
-                if self.ping(ip_obj_list[i], packet_count) == True:
+                if self.ping(ip_obj_list[i], number_of_packets) == True:
                     self.availible_server_writer(ip_obj_list[i])
                     print(ip_obj_list[i] + " is availible.")
                 else:

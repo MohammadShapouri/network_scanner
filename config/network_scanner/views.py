@@ -1,21 +1,23 @@
-from django.db.models.query import QuerySet
-from django.http import HttpResponse
 from django.views.generic import DeleteView, CreateView, ListView, UpdateView, FormView
 from django.views import View
 from django.urls import reverse_lazy
 from .forms import NetworkScanningSessionForm, NetworkScanningSessionUpdateForm, NetworkScanningForm, NetworkScanningSessionDeletionForm, DeviceAndOSDetailForm, NetworkScanningSessionDownServersDeletionForm
-from .models import NetworkScanningSession, NetworkScanningSessionIPAddress, PortStatus, DeviceAndOSDetail, IS_OPEN, IS_SCANNED
+from .models import NetworkScanningSession, NetworkScanningSessionIPAddress, PortStatus, IS_OPEN, IS_SCANNED
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .utils.scanners.server_ping_scanner import ServerPingScanner
 from .utils.scanners.port_scanner import PortScanner
 from .utils.file_readers.nmap_device_and_os_detection_txt_file_reader import NmapDeviceAndOSDetectionTxtFileReader
+from .utils.scanners.device_and_os_type_scanner import DeviceAndOSTypeScanner
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
 from pathlib import Path
 from datetime import datetime
 from django.db import connection
 import os
+import subprocess
+import platform
+import tempfile
 # Create your views here.
 
 class NetworkScanningSessionListView(ListView):
@@ -348,10 +350,10 @@ class NetworkScanningSessionDetailView(View):
                 ip_addresses_queryset = ip_addresses_queryset.filter(is_up='up')
             elif form.cleaned_data.get('what_to_scan') == 'not_availible':
                 ip_addresses_queryset = ip_addresses_queryset.filter(is_up='down')
-            
+
 
             if form.cleaned_data.get('scan_type') == 'ss':
-                sps = ServerPingScanner(4, form.cleaned_data.get('thread_count'), ip_addresses_queryset)
+                sps = ServerPingScanner(4, form.cleaned_data.get('number_of_threads'), ip_addresses_queryset)
                 sps.start_scanning()
             elif form.cleaned_data.get('scan_type') == 'ps':
                 open_ports_pre_bulit_obj_list = list()
@@ -368,7 +370,7 @@ class NetworkScanningSessionDetailView(View):
                 else:
                     port_status_queryset = PortStatus.objects.filter(Q(related_ip_address__related_scan_session=network_scanning_session_obj)& Q(port=port_number)).select_related('related_ip_address')
 
-                ps = PortScanner(port_number, form.cleaned_data.get('thread_count'), 10, port_status_queryset)
+                ps = PortScanner(port_number, form.cleaned_data.get('number_of_threads'), 10, port_status_queryset)
                 ps.start_scanning()
 
 
@@ -786,6 +788,37 @@ class NetworkScanningSessionDeviceDetailView(View):
 
                 nmap_file_reader = NmapDeviceAndOSDetectionTxtFileReader(in_memory_nmap_txt_result_file_name, ip_address_queryset)
                 nmap_file_reader.convert_and_save_device_and_os_data_in_db()
+            elif form.cleaned_data.get('scan_type') == 'rs':
+                    
+                scan_result_data = None
+                with tempfile.TemporaryFile() as tempf:
+                    proc = subprocess.Popen(['nmap', '--version'], stdout=tempf)
+                    proc.wait()
+                    tempf.seek(0)
+                    scan_result_data = tempf.read().decode('utf-8').split('\n')
+
+                if platform.system().lower()=='windows':
+                    form.add_error('scan_type', 'This type of scan can not be used in Windows systems.')
+
+                elif 'Nmap version'.lower() not in scan_result_data[0].lower():
+                    form.add_error('scan_type', 'Nmap not found. Check if it was installed before.')
+                
+                else:
+                    ip_addresses_queryset = None
+                    if network_scanning_session_obj.random_or_not == 'r':
+                        ip_addresses_queryset = NetworkScanningSessionIPAddress.objects.filter(related_scan_session=network_scanning_session_obj).order_by('?')
+                    else:
+                        ip_addresses_queryset = NetworkScanningSessionIPAddress.objects.filter(related_scan_session=network_scanning_session_obj)
+
+                    if form.cleaned_data.get('what_to_scan') == 'not_scanned':
+                        ip_addresses_queryset = ip_addresses_queryset.filter(is_up='ns')
+                    elif form.cleaned_data.get('what_to_scan') == 'availible':
+                        ip_addresses_queryset = ip_addresses_queryset.filter(is_up='up')
+                    elif form.cleaned_data.get('what_to_scan') == 'not_availible':
+                        ip_addresses_queryset = ip_addresses_queryset.filter(is_up='down')
+
+                    daots = DeviceAndOSTypeScanner(form.cleaned_data.get('number_of_threads'), form.cleaned_data.get('system_password'), ip_addresses_queryset)
+                    daots.start_scanning()
 
 
         search_where_clause = str()

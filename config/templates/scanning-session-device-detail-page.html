@@ -109,8 +109,12 @@
                                     {{network_device_scanning_form.device_and_os_detail_nmap_txt_result_file}}
                                 </div>
                                 <div class="form-group">
-                                    <label>{{network_device_scanning_form.thread_count.label}}: (If you choosed 'Running Scanner', you can use this field.) </label>
-                                    {{network_device_scanning_form.thread_count}}
+                                    <label>{{network_device_scanning_form.number_of_threads.label}}: (If you chose 'Running Scanner', you can use this field.) </label>
+                                    {{network_device_scanning_form.number_of_threads}}
+                                </div>
+                                <div class="form-group">
+                                    <label>{{network_device_scanning_form.system_password.label}}: (If you chose 'Running Scanner', you can use this field.) </label>
+                                    {{network_device_scanning_form.system_password}}
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30" onclick="alert('Feel free to close the browser or this tab but please don\'t close the terminal or turn off your PC until scanning is finished. To stop this scan, use \'Ctrl + c\' in your terminal.')">Scan</button>
                                 {% csrf_token %}
