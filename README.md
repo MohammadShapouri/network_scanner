@@ -35,7 +35,7 @@ You can see the admin panel by opening '_127.0.0.1:8000/admin_'.
 
 
 
-## Screenshot
+## Screenshots
 ### Sessions list:
 ![sessions list](https://github.com/MohammadShapouri/network_scanner/blob/main/doc/list_sessions.png?raw=true)
 
